@@ -30,3 +30,12 @@ docker stack deploy -c docker-compose.yaml altaf
 docker stack rm altaf
 
 declare -i i;i=0; while true; do i+=1; echo $i; curl -X GET -H "Content-Type: application/json" 'http://catalogo.local/api/products'; echo ""; sleep 2; done;
+
+# List product in catalog
+curl -X GET -H "Content-Type: application/json" 'http://localhost:18080/api/products'
+# Insert product in catalog
+curl -X POST -H "Content-Type: application/json" 'http://localhost:18080/api/products' -d '{"id":"1", "title":"mele", "category":"frutto", "description":"verde", "availability":"10", "price":"2.2"}'
+# Buy product
+curl -X POST -H "Content-Type: application/json" 'http://localhost:28080/api/acquisti/fabio' -d '{"productId":"1", "count":"5"}'
+# List user purchases
+curl -X GET -H "Content-Type: application/json" 'http://localhost:28080/api/acquisti/fabio'
