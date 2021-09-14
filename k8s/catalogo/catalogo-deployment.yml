@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: af
       tier: catalogo
-  replicas: 2
+  replicas: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: catalogo
-        image: smartcommunitylab/af-catalog
+        image: smartcommunitylab/af-catalog:latest
         # resources:
         #   limits:
         #     cpu: "0.3"

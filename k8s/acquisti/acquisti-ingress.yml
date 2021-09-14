@@ -1,15 +1,19 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: acquisti
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    kubernetes.io/ingress.class: nginx
 spec:
  rules:
  - host: acquisti.local
    http:
      paths:
      - path: /(.+)
+       pathType: Prefix
        backend:
-         serviceName: acquisti
-         servicePort: 8080
+         service:
+           name: acquisti
+           port:
+             number: 8080

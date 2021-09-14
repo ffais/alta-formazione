@@ -1,8 +1,8 @@
+# syntax = docker/dockerfile:1.0-experimental
 FROM maven:3-jdk-12 AS mvn
 WORKDIR /tmp
 COPY ./pom.xml /tmp/pom.xml
 COPY ./src /tmp/src
-WORKDIR /tmp/
 RUN mvn clean install -Dmaven.test.skip=true
 
 FROM openjdk:12-alpine
@@ -23,3 +23,7 @@ COPY --from=mvn --chown=purchase:purchase ${FOLDER}/${APP} /home/${USER}/app/pur
 
 USER purchase
 CMD ["java", "-XX:MaxRAMPercentage=50", "-jar", "purchase.jar"]
+
+
+# comando creazione immagine docker
+# docker build -t af-acquisti -f Acquisti/Dockerfile Acquisti/

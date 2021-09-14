@@ -1,15 +1,19 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: catalogo
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    kubernetes.io/ingress.class: nginx
 spec:
  rules:
  - host: catalogo.local
    http:
      paths:
      - path: /(.+)
+       pathType: Prefix
        backend:
-         serviceName: catalogo
-         servicePort: 8080
+         service:
+           name: catalogo
+           port:
+             number: 8080

@@ -1,10 +1,15 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
  name: mongo
+ # namespace: alta-altaformazione
 spec:
  serviceName: "mongo"
  replicas: 1
+ selector:
+    matchLabels:
+       tier: mongo
+       app: af
  template:
    metadata:
      labels:

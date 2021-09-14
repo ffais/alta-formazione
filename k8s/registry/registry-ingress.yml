@@ -4,12 +4,16 @@ metadata:
   name: registry
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    kubernetes.io/ingress.class: nginx
 spec:
  rules:
  - host: registry.local
    http:
      paths:
      - path: /(.*)
+       pathType: Prefix
        backend:
-         serviceName: registry
-         servicePort: 8761
+         service:
+           name: registry
+           port:
+             number: 8761
