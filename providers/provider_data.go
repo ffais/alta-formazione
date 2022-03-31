@@ -119,11 +119,13 @@ func defaultURL(u *url.URL, d *url.URL) *url.URL {
 
 // OIDCClaims is a struct to unmarshal the OIDC claims from an ID Token payload
 type OIDCClaims struct {
-	Subject  string   `json:"sub"`
-	Email    string   `json:"-"`
-	Groups   []string `json:"-"`
-	Verified *bool    `json:"email_verified"`
-	Nonce    string   `json:"nonce"`
+	Subject     string   `json:"sub"`
+	Email       string   `json:"-"`
+	Space       string   `json:"-"`
+	NuclioSpace string   `json:"-"`
+	Groups      []string `json:"-"`
+	Verified    *bool    `json:"email_verified"`
+	Nonce       string   `json:"nonce"`
 
 	raw map[string]interface{}
 }
@@ -173,6 +175,18 @@ func (p *ProviderData) buildSessionFromClaims(idToken *oidc.IDToken) (*sessions.
 		ss.PreferredUsername = pref
 	}
 
+	// Add space claim for nuclio routing
+	// TODO (@NickMeves) Deprecate for dynamic claim to session mapping
+	if space, ok := claims.raw["space"].(string); ok {
+		ss.Space = space
+	}
+
+	// Add nuclio_space claim for nuclio routing
+	// TODO (@NickMeves) Deprecate for dynamic claim to session mapping
+	if nuclio, ok := claims.raw["nuclio_space"].(string); ok {
+		ss.NuclioSpace = nuclio
+	}
+
 	// `email_verified` must be present and explicitly set to `false` to be
 	// considered unverified.
 	verifyEmail := (p.EmailClaim == OIDCEmailClaim) && !p.AllowUnverifiedEmail
@@ -202,6 +216,7 @@ func (p *ProviderData) getClaims(idToken *oidc.IDToken) (*OIDCClaims, error) {
 	}
 	claims.Groups = p.extractGroups(claims.raw)
 
+	logger.Errorf("claim list %v", claims)
 	return claims, nil
 }
 
